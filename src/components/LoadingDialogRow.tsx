@@ -30,4 +30,3 @@ const LoadingDialogRow = ({ label, active, progress }: IProps) => (
 );
 
 export default LoadingDialogRow;
-

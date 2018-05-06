@@ -18,4 +18,3 @@ const Overlay = ({ children }: IProps) => (
 );
 
 export default Overlay;
-

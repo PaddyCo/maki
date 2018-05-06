@@ -1,6 +1,5 @@
 import * as React from "react";
 import { storiesOf } from "@storybook/react";
-import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 
 import LoadingDialog from "../src/components/LoadingDialog";
 import Overlay from "../src/components/Overlay";
@@ -23,4 +22,3 @@ storiesOf("LoadingDialog", module)
   .add("All done", () =>
     <LoadingDialog status={Status.Ok} apiProgress={1} />
   );
-

@@ -40,4 +40,3 @@ const MakiApiProvider = ({ children }: IProps) => (
 );
 
 export default MakiApiProvider;
-
