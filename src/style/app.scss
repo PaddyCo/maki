@@ -1,6 +1,25 @@
+$prefix: "maki";
+
+@import "fonts";
+@import "../../node_modules/react-circular-progressbar/dist/styles.css";
+@import "../../node_modules/animate.css/animate.css";
+
+$orange: #FF6F00;
+$green: #1BCB00;
+
 body, html {
   overflow: hidden;
   margin: 0;
   height: 100%;
   width: 100%;
+  background: linear-gradient(
+      to bottom right,
+      rgba(232, 75, 148, 0.7),
+      rgba(131, 110, 242, 0.7),
+      rgba(84, 225, 206, 0.7)
+    );
+  font-family: "Roboto";
 }
+
+@import "overlay";
+@import "loading-dialog";

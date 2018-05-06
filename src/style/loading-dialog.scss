@@ -1,0 +1,53 @@
+.#{$prefix}-loading-dialog {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 64px;
+}
+
+$font-size: 24px;
+
+.#{$prefix}-loading-dialog-row {
+  font-size: $font-size;
+  display: flex;
+
+  &__label {
+    margin-left: 16px;
+    transition: opacity 0.25s;
+
+    animation-duration: 0.25s;
+
+    padding-right: $font-size;
+
+    &--inactive {
+      opacity: 0.3;
+    }
+  }
+
+  &__icon {
+    &--success {
+      color: $green;
+    }
+  }
+
+  &__progress-bar {
+    width: $font-size;
+    height: $font-size;
+    position: relative;
+    top: 4px;
+
+    text {
+      display: none;
+    }
+
+    .CircularProgressbar-path {
+      stroke: $orange;
+    }
+
+    .CircularProgressbar-trail {
+      display: none;
+    }
+  }
+}
