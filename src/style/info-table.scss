@@ -1,0 +1,41 @@
+.#{$prefix}-info-table {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 32px;
+  background-color: $modal-background;
+  color: white;
+  font-size: 24px;
+
+  &__title {
+    text-align: left;
+    width: 100%;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+
+  &__rows {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__row {
+    width: calc(50% - 16px);
+    margin-right: 16px;
+    margin-bottom: 4px;
+    margin-top: 4px;
+
+  }
+
+  &__key {
+    font-weight: 300;
+    margin-right: 8px;
+  }
+
+  &__value {
+  }
+
+
+}

@@ -4,8 +4,10 @@ $prefix: "maki";
 @import "../../node_modules/react-circular-progressbar/dist/styles.css";
 @import "../../node_modules/animate.css/animate.css";
 
+// Colors
 $orange: #FF6F00;
 $green: #1BCB00;
+$modal-background: rgba(0,0,0,0.5);
 
 body, html {
   overflow: hidden;
@@ -31,4 +33,6 @@ body, html {
 @import "loading-dialog";
 @import "game-logo";
 @import "game-video";
+@import "info-table";
+
 
