@@ -13,45 +13,39 @@ const CenterDecorator = (storyFn: () => any) => (
 
 storiesOf("GameVideo", module)
   .addDecorator(CenterDecorator)
-  .add("1:1 Gameplay video (Audio)", () =>
-    <GameVideo
-      videoPath={"/video.mp4"}
-      muted={false}
-    />
-  )
-  .add("1:1 Gameplay video (Muted)", () =>
+  .add("1:1 Gameplay video 🔇", () =>
     <GameVideo
       videoPath={"/video.mp4"}
       muted={true}
+    />
+  )
+  .add("1:1 Gameplay video 🔊", () =>
+    <GameVideo
+      videoPath={"/video.mp4"}
     />
   )
   .add("4:3 test video", () =>
     <GameVideo
       videoPath={"/4-3.mp4"}
-      muted={true}
     />
   )
   .add("16:9 test video", () =>
     <GameVideo
       videoPath={"/16-9.mp4"}
-      muted={true}
     />
   )
   .add("16:10 test video", () =>
     <GameVideo
       videoPath={"/16-10.mp4"}
-      muted={true}
     />
   )
   .add("3:4 test video", () =>
     <GameVideo
       videoPath={"/3-4.mp4"}
-      muted={true}
     />
   )
   .add("9:16 test video", () =>
     <GameVideo
       videoPath={"/9-16.mp4"}
-      muted={true}
     />
   );
