@@ -331,19 +331,6 @@
   version "8.10.12"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.12.tgz#dcb66f6de39074a296534bd1a256a3c6a1c8f5b5"
 
-"@types/react-addons-css-transition-group@^15.0.4":
-  version "15.0.4"
-  resolved "https://registry.yarnpkg.com/@types/react-addons-css-transition-group/-/react-addons-css-transition-group-15.0.4.tgz#29e63b79ebed7c6981c7c79cd932eb662341cc15"
-  dependencies:
-    "@types/react" "*"
-    "@types/react-addons-transition-group" "*"
-
-"@types/react-addons-transition-group@*":
-  version "15.0.2"
-  resolved "https://registry.yarnpkg.com/@types/react-addons-transition-group/-/react-addons-transition-group-15.0.2.tgz#5acca39824c6d8c9eee024ee584dac51a39dc59f"
-  dependencies:
-    "@types/react" "*"
-
 "@types/react-circular-progressbar@^0.8.0":
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/@types/react-circular-progressbar/-/react-circular-progressbar-0.8.0.tgz#0cbfaf4b4510681b2eba1087aa2a2dce5e130f3f"
@@ -8263,6 +8250,10 @@ react-proxy@^3.0.0-alpha.0:
   resolved "https://registry.yarnpkg.com/react-proxy/-/react-proxy-3.0.0-alpha.1.tgz#4400426bcfa80caa6724c7755695315209fa4b07"
   dependencies:
     lodash "^4.6.1"
+
+react-smooth-marquee@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-smooth-marquee/-/react-smooth-marquee-1.0.0.tgz#b29f8eb7b2fc9fea71ae9ebddb04d42b6e675670"
 
 react-split-pane@^0.1.77:
   version "0.1.77"

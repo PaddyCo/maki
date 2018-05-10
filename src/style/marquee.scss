@@ -1,0 +1,14 @@
+.Marquee {
+  overflow-x: hidden;
+  width: 100%;
+  background-color: $modal-background;
+  padding: 24px 0;
+}
+
+.MarqueeContent {
+  color: white;
+  display: inline-block;
+  font-family: "Roboto";
+  font-size: 24px;
+  white-space: nowrap;
+}
