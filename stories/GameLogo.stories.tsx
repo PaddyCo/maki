@@ -4,7 +4,7 @@ import { storiesOf } from "@storybook/react";
 import GameLogo from "../src/components/GameLogo";
 
 const CenterDecorator = (storyFn: () => any) => (
-  <div style={{display: "flex", justifyContent: "center", alignItems: "center", paddingTop: 256 }}>
+  <div style={{display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
     <div style={{ width: 512 }}>
       { storyFn() }
     </div>
