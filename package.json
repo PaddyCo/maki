@@ -10,7 +10,7 @@
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "tslint --project tsconfig.json --force",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -s ./stories/assets -p 6006",
     "build-storybook": "build-storybook"
   },
   "keywords": [],

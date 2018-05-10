@@ -43,32 +43,45 @@ export class App extends React.Component<null, null> {
               startPolling(ready ? 5000 : 500);
 
               return (
-                <CSSTransition
-                  in={!ready}
-                  unmountOnExit={true}
-                  appear={true}
-                  timeout={{
-                    appear: 1000,
-                    enter: 1000,
-                    exit: 1000,
-                  }}
-                  classNames={{
-                    appear: "animated fadeIn",
-                    enter: "animated fadeIn",
-                    exit: "animated fadeOut",
-                  }}
-                >
-                  <Overlay>
-                    <LoadingDialog
-                      status={data && data.information ? data.information.status : undefined}
-                      apiProgress={data && data.information ? data.information.cacheProgress : 0}
-                    />
-                  </Overlay>
-                </CSSTransition>
+                <div>
+                  <CSSTransition
+                    in={!ready}
+                    unmountOnExit={true}
+                    timeout={{
+                      enter: 1000,
+                      exit: 1000,
+                    }}
+                    classNames={{
+                      appear: "animated fadeIn",
+                      enter: "animated fadeIn",
+                      exit: "animated fadeOut",
+                    }}
+                  >
+                    <Overlay>
+                      <LoadingDialog
+                        status={data && data.information ? data.information.status : undefined}
+                        apiProgress={data && data.information ? data.information.cacheProgress : 0}
+                      />
+                    </Overlay>
+                  </CSSTransition>
+                  <CSSTransition
+                    in={ready}
+                    unmountOnExit={true}
+                    timeout={{
+                      enter: 1000,
+                      exit: 1000,
+                    }}
+                    classNames={{
+                      enter: "animated fadeInDown",
+                      exit: "animated fadeOutUp",
+                    }}
+                  >
+                    <h2>Maki!!</h2>
+                  </CSSTransition>
+                </div>
               );
             }}
           </StatusQuery>
-          <h2>Maki!!!</h2>
         </div>
       </MakiApiProvider>
     );
