@@ -32,4 +32,3 @@ storiesOf("InfoTable", module)
       data={data}
     />
   );
-
