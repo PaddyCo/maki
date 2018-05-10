@@ -22,4 +22,3 @@ const GameVideo = ({ videoPath, muted }: IProps) => (
 );
 
 export default GameVideo;
-

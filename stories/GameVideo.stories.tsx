@@ -54,13 +54,4 @@ storiesOf("GameVideo", module)
       videoPath={"/9-16.mp4"}
       muted={true}
     />
-  )
-
-
-
-
-
-
-
-
-
+  );

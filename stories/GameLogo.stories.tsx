@@ -53,5 +53,3 @@ storiesOf("GameLogo", module)
       releaseYear={"2011"}
     />
   );
-
-
