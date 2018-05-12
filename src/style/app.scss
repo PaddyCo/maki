@@ -3,6 +3,7 @@ $prefix: "maki";
 @import "fonts";
 @import "../../node_modules/react-circular-progressbar/dist/styles.css";
 @import "../../node_modules/animate.css/animate.css";
+@import "../../node_modules/slick-carousel/slick/slick";
 
 // Colors
 $orange: #FF6F00;
@@ -35,3 +36,4 @@ body, html {
 @import "game-video";
 @import "info-table";
 @import "marquee";
+@import "game-carousel";
