@@ -9,6 +9,8 @@ import LoadingDialog from "./components/LoadingDialog";
 import Overlay from "./components/Overlay";
 import InitializeIconLibrary from "./icons";
 import { Status } from "../src/types";
+import { IConnection, IGameEntry } from "./types";
+import GameList from "./views/GameList";
 
 InitializeIconLibrary();
 
@@ -24,6 +26,25 @@ interface IStatusData {
   information: IInformation;
 }
 class StatusQuery extends Query<IStatusData, null> {}
+
+const gamesQuery = gql`
+  query {
+    games {
+      edges {
+        node {
+          id
+          title
+          clearLogoImagePath
+        }
+      }
+    }
+  }
+`;
+interface IGamesData {
+  games: IConnection<IGameEntry>;
+}
+class GamesQuery extends Query<IGamesData, null> {}
+
 
 export class App extends React.Component<null, null> {
   render() {
@@ -76,7 +97,16 @@ export class App extends React.Component<null, null> {
                       exit: "animated fadeOutUp",
                     }}
                   >
-                    <h2>Maki!!</h2>
+                    <GamesQuery query={gamesQuery}>
+                      {({ data }) => {
+                        if (data && data.games) {
+                          return <GameList games={data.games.edges.map((e) => e.node )} />;
+                        }
+
+                        return <div>Loading</div>;
+                      }}
+                    </GamesQuery>
+
                   </CSSTransition>
                 </div>
               );

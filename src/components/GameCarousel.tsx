@@ -47,7 +47,7 @@ export default class GameCarousel extends React.Component<IProps> {
         arrows={false}
         slidesToShow={5}
         swipe={false}
-        lazyLoad={"ondemand"}
+        lazyLoad={"progressive"}
         afterChange={(index) => (onGameChange ? onGameChange(paddedEntries[index].id) : null)}
         ref={(slider) => { this.slider = slider ? slider : undefined }}
         infinite
