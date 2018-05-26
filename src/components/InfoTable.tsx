@@ -15,7 +15,7 @@ const InfoTable = ({ title, data }: IProps) => (
     <div {...classes("rows")}>
       {
         data.map(([key, value]) =>
-          <div {...classes("row")}>
+          <div key={key} {...classes("row")}>
             <span {...classes("key")}>{key}</span>
             <span {...classes("value")}>{value}</span>
           </div>

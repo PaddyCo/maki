@@ -1,13 +1,13 @@
 .#{$prefix}-info-table {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
+  width: calc(100% - 64px);
   padding: 32px;
   background-color: $modal-background;
   color: white;
   font-size: 24px;
+
+  animation-duration: 300ms;
+  animation-name: tableIntro;
+
 
   &__title {
     text-align: left;
@@ -36,6 +36,18 @@
 
   &__value {
   }
-
-
 }
+
+@keyframes tableIntro {
+  from {
+    opacity: 0;
+    transform: translate3d(-25%, 0, 0);
+
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+

@@ -5,7 +5,7 @@ import BEMHelper from "../BEMHelper";
 const classes = new BEMHelper("grid");
 
 export interface IGridProps {
-  children: JSX.Element[] | JSX.Element;
+  children?: JSX.Element[] | JSX.Element;
   className?: string;
   style?: React.CSSProperties;
 }

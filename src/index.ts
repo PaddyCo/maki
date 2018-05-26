@@ -15,12 +15,31 @@ if (isDevMode) {
 const createWindow = async () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1920,
+    height: 1080,
   });
+
+  if (isDevMode) {
+    mainWindow.setMenuBarVisibility(false);
+    mainWindow.setAutoHideMenuBar(true);
+  } else {
+    mainWindow.setMenu(null);
+  }
 
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`);
+
+  mainWindow.addListener("blur", () => {
+    if (mainWindow) {
+      mainWindow.webContents.setAudioMuted(true);
+    }
+  });
+
+  mainWindow.addListener("focus", () => {
+    if (mainWindow) {
+      mainWindow.webContents.setAudioMuted(false);
+    }
+  });
 
   // Open the DevTools.
   if (isDevMode) {

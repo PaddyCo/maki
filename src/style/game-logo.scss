@@ -3,11 +3,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 65%;
 
   &__image {
-    width: 85%;
-    filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6));
+    width: 100%;
   }
 
   &__title {
@@ -17,19 +16,50 @@
     margin-top: 64px;
     text-align: center;
     color: white;
-    filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6));
+  }
 
+  &__image, &__title {
+    animation-duration: 300ms;
+    animation-name: logoIntro;
+    filter: drop-shadow(0px 3px 5px rgba(0,0,0,0.6));
   }
 
   &__byline {
     font-family: "Rubik";
     font-size: 32px;
-    margin-top: 32px;
+    margin: 32px 0 0 0;
     font-weight: 500;
     text-align: center;
     color: white;
     filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.6));
-
+    animation-duration: 300ms;
+    animation-name: bylineIntro;
   }
 
 }
+
+@keyframes logoIntro {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -25%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes bylineIntro {
+  from {
+    opacity: 0;
+    transform: translate3d(-25%, 0, 0);
+
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+

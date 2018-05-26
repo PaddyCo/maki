@@ -13,6 +13,9 @@ export interface IInformation {
 export interface IGameEntry {
   id: string;
   title: string;
+  developers: string[];
+  publishers: string[];
+  releaseDate: string;
   clearLogoImagePath: string;
 }
 
