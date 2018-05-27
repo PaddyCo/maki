@@ -3,6 +3,7 @@ import { Key } from "ts-keycode-enum";
 export interface IKey {
   type: "Key";
   code: Key;
+  state: IBindState;
 }
 
 export enum Button {
@@ -36,97 +37,159 @@ export interface IButton {
   type: "Button";
   index: Button;
   deviceIndex: number;
+  state: IBindState;
+}
+
+export interface IBindState {
+  pressTimeStamp?: number;
+  justPressed: boolean;
 }
 
 export interface IAxis {
   type: "Axis";
   index: Axis;
   deviceIndex: number;
+  state: IBindState;
 }
 
 export interface IAxisAction extends IAxis {
   positive: boolean;
 }
 
+export interface IAction {
+  bindings: Array<IKey | IButton | IAxis>;
+}
+
 export default class InputHandler {
-  private boundActions: [string, IKey | IButton | IAxisAction][]
-  private gamepads: Gamepad[];
-  private pressedKeys: Key[];
+  private updateCallback: () => void;
   private onKeyDownFunc: (e: KeyboardEvent) => void;
   private onKeyUpFunc: (e: KeyboardEvent) => void;
 
+  private actions: { [name: string]: IAction };
 
-  public constructor() {
-    this.boundActions = [];
-    this.pressedKeys = [];
+  constructor(updateCallback: () => void) {
+    this.updateCallback = updateCallback;
+    this.actions = {};
+
     this.onKeyDownFunc = this.onKeyDown.bind(this);
     this.onKeyUpFunc = this.onKeyUp.bind(this);
-
     window.addEventListener("keydown", this.onKeyDownFunc);
     window.addEventListener("keyup", this.onKeyUpFunc);
 
-
-    window.addEventListener("gamepadconnected", (e: GamepadEvent) => {
-      console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
-        e.gamepad.index, e.gamepad.id,
-        e.gamepad.buttons.length, e.gamepad.axes.length);
-
-      this.gamepads = navigator.getGamepads();
-    });
-
-  }
-
-  public bindKey(action: string, code: Key) {
-    this.boundActions.push([action, { type: "Key", code }]);
-  }
-
-  public bindButton(action: string, button: Button, deviceIndex: number = 0) {
-    this.boundActions.push([action, { type: "Button", index: button, deviceIndex }]);
-  }
-
-  public bindAxisAction(action: string, axis: Axis, positive: boolean, deviceIndex: number = 0) {
-    this.boundActions.push([action, { type: "Axis", index: axis, deviceIndex, positive }]);
-  }
-
-  public isPressed(action: string): boolean {
-    this.pollDevices();
-
-    return this.boundActions.filter((a) => a[0] == action).some((a) => {
-      const binding = a[1];
-      switch (binding.type) {
-        case "Key":
-          return this.pressedKeys.find((k) => k === binding.code) !== undefined;
-        case "Button":
-          if (this.gamepads && this.gamepads[binding.deviceIndex]) {
-            return this.gamepads[binding.deviceIndex].buttons[binding.index].pressed;
-          } else {
-            return false;
-          }
-        case "Axis":
-          return false; // TODO
-      }
-    });
+    requestAnimationFrame(this.update.bind(this));
   }
 
   public destroy() {
     window.removeEventListener("keydown", this.onKeyDownFunc);
+    window.removeEventListener("keyup", this.onKeyUpFunc);
+  }
+
+  public bindKey(action: string, code: Key) {
+    this.bind(action, { type: "Key", code, state: { justPressed: false } });
+  }
+
+  public bindButton(action: string, index: Button, deviceIndex: number = 0) {
+    this.bind(action, { type: "Button", index, deviceIndex,  state: { justPressed: false }});
+  }
+
+  public isPressed(action: string): boolean {
+    const a = this.actions[action];
+
+    return a && a.bindings.some((b) => b.state.pressTimeStamp ? true : false);
+  }
+
+  public justPressed(action: string): boolean {
+    const a = this.actions[action];
+    return a && a.bindings.some((b) => b.state.justPressed);
+  }
+
+  public held(action: string): number | false {
+    const a = this.actions[action];
+    let pressTimeStamps = a ? a.bindings.map(b => b.state.pressTimeStamp) : undefined;
+
+    if (!pressTimeStamps) {
+      return false;
+    } else {
+      const pressTimeStamp = pressTimeStamps.filter((t) => t).sort()[0];
+      return pressTimeStamp ? Math.floor(performance.now() - pressTimeStamp) : false;
+    }
+
+  }
+
+  private bind(action: string, bind: IKey | IButton | IAxis) {
+    if (!this.actions[action]) {
+      this.actions[action] = {
+        bindings: [bind],
+      };
+    } else {
+      this.actions[action].bindings.push(bind);
+    }
+  }
+
+  private update() {
+    this.updateButtonStates();
+
+    this.updateCallback();
+
+    Object.keys(this.actions).forEach((key) => {
+      this.actions[key].bindings.forEach((_, i) => {
+        this.actions[key].bindings[i].state.justPressed = false;
+      });
+    });
+
+    requestAnimationFrame(this.update.bind(this));
   }
 
   private onKeyDown(e: KeyboardEvent) {
-    if (!this.pressedKeys.find((k) => k === e.keyCode)) {
-      this.pressedKeys.push(e.keyCode);
-    }
+    Object.keys(this.actions).forEach((key) => {
+      const bindIndex = this.actions[key].bindings.findIndex((b) => b.type === "Key" && b.code === e.keyCode);
+      if (bindIndex > -1) {
+        this.press(key, bindIndex)
+      }
+    });
   }
 
   private onKeyUp(e: KeyboardEvent) {
-    this.pressedKeys = this.pressedKeys.filter((k) => k !== e.keyCode);
+    Object.keys(this.actions).forEach((key) => {
+      this.actions[key].bindings.forEach((bind, i) => {
+        if (bind.state.pressTimeStamp && bind.type === "Key" && bind.code === e.keyCode) {
+          this.actions[key].bindings[i].state.pressTimeStamp = undefined;
+          this.actions[key].bindings[i].state.justPressed = false;
+        }
+      });
+    });
   }
 
+  private updateButtonStates() {
+    const gamepads = navigator.getGamepads();
 
-  private pollDevices() {
-    if (this.gamepads && this.gamepads.length > 0 && this.gamepads[0].timestamp + 6 < performance.now()) {
-      this.gamepads = navigator.getGamepads();
+    if (!gamepads) { return; }
+
+    Object.keys(this.actions).forEach((key) => {
+      const action = this.actions[key];
+
+      action.bindings.forEach((bind, i) => {
+        if (bind.type == "Button") {
+          const gamepad = gamepads[bind.deviceIndex];
+
+          if (gamepad && gamepad.buttons[bind.index].pressed) {
+            this.press(key, i);
+          } else if (gamepad && !gamepad.buttons[bind.index].pressed) {
+            this.actions[key].bindings[i].state.pressTimeStamp = undefined;
+            this.actions[key].bindings[i].state.justPressed = false;
+          }
+        }
+      });
+    });
+  }
+
+  private press(action: string, bindIndex: number) {
+    const a = this.actions[action];
+    const b = a.bindings[bindIndex];
+
+    if (a && b && !b.state.pressTimeStamp) {
+      this.actions[action].bindings[bindIndex].state.pressTimeStamp = performance.now();
+      this.actions[action].bindings[bindIndex].state.justPressed = true;
     }
   }
 }
-

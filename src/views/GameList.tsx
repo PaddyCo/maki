@@ -16,9 +16,9 @@ import toSentence from "../helpers/toSentence";
 import { Grid, Row, Column } from "../components/Grid";
 import { IGame } from "../types";
 import fixPath from "../helpers/fixPath";
-import InputHandler, { Button } from "../helpers/inputHandler";
+import InputHandler, { Button } from "../helpers/InputHandler";
 
-interface IProps {
+export interface IProps {
   games: IGameEntry[];
   client: ApolloClient<any>;
 }
@@ -63,25 +63,28 @@ class GameList extends React.Component<IProps, IState> {
     currentGameIndex: 607,
     loadGame: true,
   };
-  private inputPollIntervalID: number;
   private loadTimeoutId: NodeJS.Timer;
   private inputHandler: InputHandler;
+  private lastScrollTimestamp: number;
 
   public componentDidMount() {
     // Assign handleInput function to a variable so we can remove it on unmount.
-
-    this.inputHandler = new InputHandler;
+    this.inputHandler = new InputHandler(() => {
+      if (this.shouldScroll("Left")) {
+        this.scrollGames(-1);
+      }
+      if (this.shouldScroll("Right")) {
+        this.scrollGames(1);
+      }
+    });
     this.inputHandler.bindKey("Left", Key.LeftArrow);
     this.inputHandler.bindKey("Right", Key.RightArrow);
     this.inputHandler.bindButton("Left", Button.Left);
     this.inputHandler.bindButton("Right", Button.Right);
-
-    this.inputPollIntervalID = setInterval(this.handleInput.bind(this), 50);
   }
 
   public componentWillUnmount() {
-    clearInterval(this.inputPollIntervalID);
-    this.inputHandler.destroy();
+    //this.inputHandler.destroy();
   }
 
   private rotateArray<T>(arr: T[], n: number): T[] {
@@ -170,13 +173,28 @@ class GameList extends React.Component<IProps, IState> {
   }
 
   private handleInput() {
+    if (this.lastScrollTimestamp < performance.now() - 240) {
+      if (this.inputHandler.isPressed("Left")) {
+        this.scrollGames(-1);
+      }
 
-    if (this.inputHandler.isPressed("Left")) {
-      this.scrollGames(-1);
+      if (this.inputHandler.isPressed("Right")) {
+        this.scrollGames(1);
+      }
     }
 
-    if (this.inputHandler.isPressed("Right")) {
-      this.scrollGames(1);
+    if (this.inputHandler.isPressed("Launch")) {
+      this.props.client.mutate({
+        mutation: gql`
+          mutation playGame($gameId: String!) {
+            playGame(id: $gameId) {
+              id
+              playCount
+            }
+          }
+        `,
+        variables: { gameId: this.props.games[this.state.currentGameIndex].id },
+      });
     }
 
     //if (event.repeat) {
@@ -198,17 +216,6 @@ class GameList extends React.Component<IProps, IState> {
     //    this.scrollGames(1);
     //    break;
     //  case "Enter":
-    //    this.props.client.mutate({
-    //      mutation: gql`
-    //        mutation playGame($gameId: String!) {
-    //          playGame(id: $gameId) {
-    //            id
-    //            playCount
-    //          }
-    //        }
-    //      `,
-    //      variables: { gameId: this.props.games[this.state.currentGameIndex].id },
-    //    });
     //    break;
     //}
   }
@@ -219,12 +226,23 @@ class GameList extends React.Component<IProps, IState> {
       currentGameIndex: this.state.currentGameIndex + amount,
       loadGame: false,
     }, () => {
+      this.lastScrollTimestamp = performance.now();
       this.loadTimeoutId = setTimeout(() => {
         this.setState({ loadGame: true });
-      }, 100);
+      }, 200);
     });
   }
 
+  private shouldScroll(direction: "Left" | "Right"): boolean {
+    const heldTime = this.inputHandler.held(direction);
+    if (this.inputHandler.justPressed(direction)) {
+      return true;
+    } else if (heldTime && heldTime > 500 && performance.now() - this.lastScrollTimestamp > Math.max(150 - (heldTime / 80), 35)) {
+      return true;
+    }
+
+    return false;
+  }
 }
 
 export default withApollo(GameList);
